@@ -31,7 +31,7 @@ Puppet::Type.type(:ec2_launchconfiguration).provide(:v2, :parent => PuppetX::Pup
     end
   end
 
-  read_only(:region, :image_id, :instance_type, :iam_instance_profile_arn, :key_name, :security_groups)
+  read_only(:region, :image_id, :instance_type, :iam_instance_profile, :key_name, :security_groups)
 
   def self.config_to_hash(region, config)
     # It appears possible to get launch configurations manually to a state where
@@ -46,7 +46,7 @@ Puppet::Type.type(:ec2_launchconfiguration).provide(:v2, :parent => PuppetX::Pup
       name: config.launch_configuration_name,
       security_groups: security_group_names,
       instance_type: config.instance_type,
-      iam_instance_profile_arn: config.iam_instance_profile ? config.iam_instance_profile.arn : nil,
+      iam_instance_profile: config.iam_instance_profile,
       image_id: config.image_id,
       key_name: config.key_name,
       ensure: :present,
@@ -89,9 +89,7 @@ Puppet::Type.type(:ec2_launchconfiguration).provide(:v2, :parent => PuppetX::Pup
       image_id: resource[:image_id],
       security_groups: group_ids,
       instance_type: resource[:instance_type],
-      iam_instance_profile: resource[:iam_instance_profile_arn] ?
-          Hash['arn' => resource[:iam_instance_profile_arn]] :
-          Hash['name' => resource[:iam_instance_profile_name]],
+      iam_instance_profile: resource[:iam_instance_profile],
       user_data: data,
     }
 
